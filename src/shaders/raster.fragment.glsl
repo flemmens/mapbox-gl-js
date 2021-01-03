@@ -71,9 +71,17 @@ void main() {
 
   float zFactor  = 1.0;
   float uCellSize = pow(2.0, exaggeration + (20.0 - u_zoom));
-  float slopeCoef = 4.0;
+
+  float uZenithDeg = 45.0;
+  float uAzimuthDeg = 315.0;
+
+  float slopeCoef = 0.7;
+  float hillCoef  = 0.8;
 
   const float PI = 2.0 * asin(1.0);
+  float azimuth = uAzimuthDeg;
+  float zenithRad = (90.0 - uZenithDeg) * PI / 180.0;
+  float azimuthRad = radians(360.0 - azimuth + 90.0);
 
   float a,b,c,d,e,f,g,h,i;
   vec2 m = 1.0 / vec2(256.0, 256.0);
@@ -95,12 +103,24 @@ void main() {
   // Slope
   float slopeRad = atan(zFactor * sqrt(pow(rateOfChangeX, 2.0) + pow(rateOfChangeY, 2.0)));
 
-  // Hillshade
-  // float hillshade = (cos(zenithRad) * cos(slopeRad)) + (sin(zenithRad) * sin(slopeRad) * cos(azimuthRad - aspectRad));
+  // Aspect
+  float aspectRad = 9.0;
+  if (rateOfChangeX != 0.0) {
+    aspectRad = atan(rateOfChangeY, -(rateOfChangeX));
+    if (aspectRad < 0.0) aspectRad = (2.0 * PI) + aspectRad;
+  } else if (rateOfChangeY > 0.0)
+    aspectRad = PI / 2.0;
+  else if (rateOfChangeY < 0.0)
+    aspectRad = (2.0 * PI) - (PI / 2.0);
 
-  // Opacity
-  // float hillshade_opacity = (1.0 - hillshade) * (uHillshadeOpacity / 100.0);    // intensité
-  float slope_val = (slopeRad/(2.0 * PI) * slopeCoef);
+  // Hillshade
+  float hillshade = (cos(zenithRad) * cos(slopeRad)) + (sin(zenithRad) * sin(slopeRad) * cos(azimuthRad - aspectRad));
+
+
+  // Valeurs finales
+
+  float slope_val = slopeRad * slopeCoef;
+  float hill_val  = (1.0 - hillshade) * hillCoef;
 
 
   // color ramp
@@ -111,18 +131,23 @@ void main() {
   colours[3] = vec4(0.6,  0.4, 0.3, 2000.0);
   colours[4] = vec4(1.0,  1.0, 1.0, 4000.0);
 
-  gl_FragColor.rgb = colours[0].rgb;
+  vec4 color = vec4(colours[0].rgb, 1.0);
 
 	for (int n=0; n<4; n++) {
-		gl_FragColor.rgb = mix(
-			gl_FragColor.rgb,
+		color.rgb = mix(
+			color.rgb,
 			colours[n+1].rgb,
 			smoothstep( colours[n].a, colours[n+1].a, height(v_pos0) )
 		);
 	}
-	gl_FragColor.a = 1.;
+	gl_FragColor = color;
+  gl_FragColor = mix(color, vec4(0.0, 0.0, 0.0, slope_val), 0.5);
+  gl_FragColor = mix(color, vec4(0.0, 0.0, 0.0, hill_val), 0.2);
 
-  gl_FragColor = vec4(0.0, 0.0, 0.0, slope_val);
+  gl_FragColor = mix(gl_FragColor, vec4(0.0, 0.0, 0.0, slope_val), 0.2);
+
+//  gl_FragColor = vec4(0.0, 0.0, 0.0, slope_val);
+//  gl_FragColor = vec4(0.0, 0.0, 0.0, hill_val);
 
 
 #ifdef OVERDRAW_INSPECTOR
