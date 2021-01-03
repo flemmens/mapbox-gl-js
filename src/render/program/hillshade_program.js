@@ -84,7 +84,8 @@ const hillshadeUniformValues = (
 };
 
 const hillshadeUniformPrepareValues = (
-    tileID: OverscaledTileID, dem: DEMData
+    tileID: OverscaledTileID,
+    dem: DEMData
 ): UniformValues<HillshadePrepareUniformsType> => {
 
     const stride = dem.stride;

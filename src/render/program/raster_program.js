@@ -25,7 +25,8 @@ export type RasterUniformsType = {|
     'u_brightness_high': Uniform1f,
     'u_saturation_factor': Uniform1f,
     'u_contrast_factor': Uniform1f,
-    'u_spin_weights': Uniform3f
+    'u_spin_weights': Uniform3f,
+    'u_zoom': Uniform1f
 |};
 
 const rasterUniforms = (context: Context, locations: UniformLocations): RasterUniformsType => ({
@@ -41,7 +42,8 @@ const rasterUniforms = (context: Context, locations: UniformLocations): RasterUn
     'u_brightness_high': new Uniform1f(context, locations.u_brightness_high),
     'u_saturation_factor': new Uniform1f(context, locations.u_saturation_factor),
     'u_contrast_factor': new Uniform1f(context, locations.u_contrast_factor),
-    'u_spin_weights': new Uniform3f(context, locations.u_spin_weights)
+    'u_spin_weights': new Uniform3f(context, locations.u_spin_weights),
+    'u_zoom': new Uniform1f(context, locations.u_zoom)
 });
 
 const rasterUniformValues = (
@@ -49,8 +51,12 @@ const rasterUniformValues = (
     parentTL: [number, number],
     parentScaleBy: number,
     fade: {mix: number, opacity: number},
-    layer: RasterStyleLayer
-): UniformValues<RasterUniformsType> => ({
+    layer: RasterStyleLayer,
+    zoom: number
+
+): UniformValues<RasterUniformsType> => {
+
+  return {
     'u_matrix': matrix,
     'u_tl_parent': parentTL,
     'u_scale_parent': parentScaleBy,
@@ -63,8 +69,10 @@ const rasterUniformValues = (
     'u_brightness_high': layer.paint.get('raster-brightness-max'),
     'u_saturation_factor': saturationFactor(layer.paint.get('raster-saturation')),
     'u_contrast_factor': contrastFactor(layer.paint.get('raster-contrast')),
-    'u_spin_weights': spinWeights(layer.paint.get('raster-hue-rotate'))
-});
+    'u_spin_weights': spinWeights(layer.paint.get('raster-hue-rotate')),
+    'u_zoom': zoom
+  };
+};
 
 function spinWeights(angle) {
     angle *= Math.PI / 180;

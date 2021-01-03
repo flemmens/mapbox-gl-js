@@ -40,7 +40,7 @@ function drawRaster(painter: Painter, sourceCache: SourceCache, layer: RasterSty
         // Use gl.LESS to prevent double drawing in areas where tiles overlap.
         const depthMode = painter.depthModeForSublayer(coord.overscaledZ - minTileZ,
             layer.paint.get('raster-opacity') === 1 ? DepthMode.ReadWrite : DepthMode.ReadOnly, gl.LESS);
-
+// console.log(coord.overscaledZ)
         const tile = sourceCache.getTile(coord);
         const posMatrix = painter.transform.calculatePosMatrix(coord.toUnwrapped(), align);
 
@@ -67,7 +67,7 @@ function drawRaster(painter: Painter, sourceCache: SourceCache, layer: RasterSty
             tile.texture.bind(textureFilter, gl.CLAMP_TO_EDGE, gl.LINEAR_MIPMAP_NEAREST);
         }
 
-        const uniformValues = rasterUniformValues(posMatrix, parentTL || [0, 0], parentScaleBy || 1, fade, layer);
+        const uniformValues = rasterUniformValues(posMatrix, parentTL || [0, 0], parentScaleBy || 1, fade, layer, coord.overscaledZ);
 
         if (source instanceof ImageSource) {
             program.draw(context, gl.TRIANGLES, depthMode, StencilMode.disabled, colorMode, CullFaceMode.disabled,
