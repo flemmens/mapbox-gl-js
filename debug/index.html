@@ -1,30 +1,69 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Mapbox GL JS debug page</title>
+    <title>FLP Mapbox GL debug</title>
     <meta charset='utf-8'>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
     <link rel='stylesheet' href='../dist/mapbox-gl.css' />
+
     <style>
-        body { margin: 0; padding: 0; }
-        html, body, #map { height: 100%; }
+      #map {
+        position: absolute;
+        left: 0;
+        top: 52px;
+        right: 0;
+        bottom: 0;
+        z-index: 0;
+      }
+
+      #info {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        height: 52px;
+        line-height: 52px;
+        vertical-align: middle;
+        padding-left: 16px;
+        color: #333359;
+        background: #fff;
+        box-shadow: 0px 0px 6px rgba(0,0,0,0.2);
+        /* box-shadow: 0 10px 35px rgba(51,51,89,.1); */
+        font-family: sans-serif;
+        z-index: 10;
+      }
     </style>
+
 </head>
 
 <body>
+
+<div id="info" class="info">
+  FLP Mapbox GL Test
+</div>
 <div id='map'></div>
 
 <script src='../dist/mapbox-gl-dev.js'></script>
-<script src='../debug/access_token_generated.js'></script>
 <script>
 
+mapboxgl.accessToken = "pk.eyJ1IjoienN0YWRsZXIiLCJhIjoiY2lvbDc5Zzl6MDAwc3Z2bTZ6NDNybDM3dSJ9.vxR1WVn26mEtpEk9MzdiUA";
+
 var map = window.map = new mapboxgl.Map({
-    container: 'map',
-    zoom: 12.5,
-    center: [-77.01866, 38.888],
-    style: 'mapbox://styles/mapbox/streets-v10',
-    hash: true
+  container: 'map',
+  zoom: 7,
+  center: [34.461, -93.822],
+//  style: 'mapbox://styles/mapbox/streets-v11',
+//  style: '../debug/styles/osm.json',
+  style: '../debug/styles/rgb.json',
+//    style: '../debug/styles/be.json',
+//  style: '../debug/styles/mapbox.json',
+  hash: true
 });
+
+map.dragRotate.disable();
+map.touchZoomRotate.disableRotation();
+map.addControl(new mapboxgl.NavigationControl(), 'top-left');
 
 </script>
 </body>

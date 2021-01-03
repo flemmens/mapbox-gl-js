@@ -1,0 +1,28 @@
+{
+  "version": 8,
+  "name": "Google map",
+  "sources": {
+
+    "osm": {
+      "type": "raster",
+      "tiles": [
+          "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+      ],
+      "tileSize": 256
+    }
+
+  },
+
+  "sprite": "mapbox://sprites/mapbox/basic-v9",
+  "glyphs": "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
+
+  "layers": [
+    {
+      "id": "osm-tiles",
+      "type": "raster",
+      "source": "osm",
+      "minzoom": 0,
+      "maxzoom": 22
+    }
+  ]
+}

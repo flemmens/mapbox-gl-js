@@ -64,7 +64,7 @@ class RasterTileSource extends Evented implements Source {
     load() {
         this._loaded = false;
         this.fire(new Event('dataloading', {dataType: 'source'}));
-        this._tileJSONRequest = loadTileJSON(this._options, this.map._requestManager, (err, tileJSON) => {
+        this._tileJSONRequest = loadTileJSON(this._options, (err, tileJSON) => {
             this._tileJSONRequest = null;
             this._loaded = true;
             if (err) {
@@ -110,7 +110,8 @@ class RasterTileSource extends Evented implements Source {
     }
 
     loadTile(tile: Tile, callback: Callback<void>) {
-        const url = this.map._requestManager.normalizeTileURL(tile.tileID.canonical.url(this.tiles, this.scheme), this.tileSize);
+        const url = tile.tileID.canonical.url(this.tiles, this.scheme);
+
         tile.request = getImage(this.map._requestManager.transformRequest(url, ResourceType.Tile), (err, img) => {
             delete tile.request;
 

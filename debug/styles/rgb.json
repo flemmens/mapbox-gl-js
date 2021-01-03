@@ -1,0 +1,28 @@
+{
+  "version": 8,
+  "name": "Google map",
+  "sources": {
+
+    "rgb": {
+      "type": "raster",
+      "tiles": [
+        "https://api.mapbox.com/v4/mapbox.terrain-rgb/{z}/{x}/{y}.pngraw?access_token=pk.eyJ1IjoiZmxlbW1lbnMiLCJhIjoiZW5MaUZKYyJ9.blF63vFqEGh9RfbgEmA29A"
+      ],
+      "tileSize": 256
+    }
+
+  },
+
+  "sprite": "mapbox://sprites/mapbox/basic-v9",
+  "glyphs": "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
+
+  "layers": [
+    {
+      "id": "mapbox-rgb",
+      "type": "raster",
+      "source": "rgb",
+      "minzoom": 0,
+      "maxzoom": 22
+    }
+  ]
+}

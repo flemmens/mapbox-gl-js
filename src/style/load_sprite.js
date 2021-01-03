@@ -15,7 +15,7 @@ export default function(baseURL: string,
                           callback: Callback<{[_: string]: StyleImage}>): Cancelable {
     let json: any, image, error;
     const format = browser.devicePixelRatio > 1 ? '@2x' : '';
-
+console.log('base url: '+baseURL)
     let jsonRequest = getJSON(requestManager.transformRequest(requestManager.normalizeSpriteURL(baseURL, format, '.json'), ResourceType.SpriteJSON), (err: ?Error, data: ?Object) => {
         jsonRequest = null;
         if (!error) {

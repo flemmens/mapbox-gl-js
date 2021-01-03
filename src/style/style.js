@@ -215,7 +215,6 @@ class Style extends Evented {
         const validate = typeof options.validate === 'boolean' ?
             options.validate : !isMapboxURL(url);
 
-        url = this.map._requestManager.normalizeStyleURL(url, options.accessToken);
         const request = this.map._requestManager.transformRequest(url, ResourceType.Style);
         this._request = getJSON(request, (error: ?Error, json: ?Object) => {
             this._request = null;

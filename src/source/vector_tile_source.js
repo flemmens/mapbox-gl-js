@@ -96,7 +96,7 @@ class VectorTileSource extends Evented implements Source {
     load() {
         this._loaded = false;
         this.fire(new Event('dataloading', {dataType: 'source'}));
-        this._tileJSONRequest = loadTileJSON(this._options, this.map._requestManager, (err, tileJSON) => {
+        this._tileJSONRequest = loadTileJSON(this._options, (err, tileJSON) => {
             this._tileJSONRequest = null;
             this._loaded = true;
             if (err) {
@@ -182,7 +182,7 @@ class VectorTileSource extends Evented implements Source {
     }
 
     loadTile(tile: Tile, callback: Callback<void>) {
-        const url = this.map._requestManager.normalizeTileURL(tile.tileID.canonical.url(this.tiles, this.scheme));
+        const url = tile.tileID.canonical.url(this.tiles, this.scheme);
         const params = {
             request: this.map._requestManager.transformRequest(url, ResourceType.Tile),
             uid: tile.uid,

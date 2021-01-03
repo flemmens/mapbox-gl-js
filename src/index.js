@@ -7,7 +7,6 @@ import {version} from '../package.json';
 import Map from './ui/map';
 import NavigationControl from './ui/control/navigation_control';
 import GeolocateControl from './ui/control/geolocate_control';
-import AttributionControl from './ui/control/attribution_control';
 import ScaleControl from './ui/control/scale_control';
 import FullscreenControl from './ui/control/fullscreen_control';
 import Popup from './ui/popup';
@@ -35,7 +34,6 @@ const exported = {
     Map,
     NavigationControl,
     GeolocateControl,
-    AttributionControl,
     ScaleControl,
     FullscreenControl,
     Popup,
@@ -91,11 +89,13 @@ const exported = {
      * @see [Display a map](https://www.mapbox.com/mapbox-gl-js/examples/)
      */
     get accessToken(): ?string {
+console.log('get token '+config.ACCESS_TOKEN);
         return config.ACCESS_TOKEN;
     },
 
     set accessToken(token: string) {
         config.ACCESS_TOKEN = token;
+console.log('set token '+config.ACCESS_TOKEN);
     },
 
     /**
@@ -107,11 +107,13 @@ const exported = {
      * mapboxgl.baseApiUrl = 'https://api.mapbox.com';
      */
     get baseApiUrl(): ?string {
+console.log('get baseApiUrl '+config.API_URL);
         return config.API_URL;
     },
 
     set baseApiUrl(url: string) {
         config.API_URL = url;
+console.log('set baseApiUrl '+config.API_URL);
     },
 
     /**

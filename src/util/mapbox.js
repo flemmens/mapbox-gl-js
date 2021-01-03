@@ -1,18 +1,5 @@
 // @flow
 
-/***** START WARNING - IF YOU USE THIS CODE WITH MAPBOX MAPPING APIS, REMOVAL OR
-* MODIFICATION OF THE FOLLOWING CODE VIOLATES THE MAPBOX TERMS OF SERVICE  ******
-* The following code is used to access Mapbox's Mapping APIs. Removal or modification
-* of this code when used with Mapbox's Mapping APIs can result in higher fees and/or
-* termination of your account with Mapbox.
-*
-* Under the Mapbox Terms of Service, you may not use this code to access Mapbox
-* Mapping APIs other than through Mapbox SDKs.
-*
-* The Mapping APIs documentation is available at https://docs.mapbox.com/api/maps/#maps
-* and the Mapbox Terms of Service are available at https://www.mapbox.com/tos/
-******************************************************************************/
-
 import config from './config';
 
 import browser from './browser';
@@ -41,11 +28,9 @@ export class RequestManager {
     _skuToken: string;
     _skuTokenExpiresAt: number;
     _transformRequestFn: ?RequestTransformFunction;
-    _customAccessToken: ?string;
 
-    constructor(transformRequestFn?: RequestTransformFunction, customAccessToken?: string) {
+    constructor(transformRequestFn?: RequestTransformFunction) {
         this._transformRequestFn = transformRequestFn;
-        this._customAccessToken = customAccessToken;
         this._createSkuToken();
     }
 
@@ -67,104 +52,16 @@ export class RequestManager {
         return {url};
     }
 
-    normalizeStyleURL(url: string, accessToken?: string): string {
-        if (!isMapboxURL(url)) return url;
-        const urlObject = parseUrl(url);
-        urlObject.path = `/styles/v1${urlObject.path}`;
-        return this._makeAPIURL(urlObject, this._customAccessToken || accessToken);
-    }
-
-    normalizeGlyphsURL(url: string, accessToken?: string): string {
-        if (!isMapboxURL(url)) return url;
-        const urlObject = parseUrl(url);
-        urlObject.path = `/fonts/v1${urlObject.path}`;
-        return this._makeAPIURL(urlObject, this._customAccessToken || accessToken);
-    }
-
-    normalizeSourceURL(url: string, accessToken?: string): string {
-        if (!isMapboxURL(url)) return url;
-        const urlObject = parseUrl(url);
-        urlObject.path = `/v4/${urlObject.authority}.json`;
-        // TileJSON requests need a secure flag appended to their URLs so
-        // that the server knows to send SSL-ified resource references.
-        urlObject.params.push('secure');
-        return this._makeAPIURL(urlObject, this._customAccessToken || accessToken);
-    }
-
     normalizeSpriteURL(url: string, format: string, extension: string, accessToken?: string): string {
+console.log('1. sprite:'+url)
         const urlObject = parseUrl(url);
         if (!isMapboxURL(url)) {
             urlObject.path += `${format}${extension}`;
             return formatUrl(urlObject);
         }
         urlObject.path = `/styles/v1${urlObject.path}/sprite${format}${extension}`;
-        return this._makeAPIURL(urlObject, this._customAccessToken || accessToken);
-    }
-
-    normalizeTileURL(tileURL: string, tileSize?: ?number): string {
-        if (this._isSkuTokenExpired()) {
-            this._createSkuToken();
-        }
-
-        if (tileURL && !isMapboxURL(tileURL)) return tileURL;
-
-        const urlObject = parseUrl(tileURL);
-        const imageExtensionRe = /(\.(png|jpg)\d*)(?=$)/;
-        const tileURLAPIPrefixRe = /^.+\/v4\//;
-
-        // The v4 mapbox tile API supports 512x512 image tiles only when @2x
-        // is appended to the tile URL. If `tileSize: 512` is specified for
-        // a Mapbox raster source force the @2x suffix even if a non hidpi device.
-        const suffix = browser.devicePixelRatio >= 2 || tileSize === 512 ? '@2x' : '';
-        const extension = webpSupported.supported ? '.webp' : '$1';
-        urlObject.path = urlObject.path.replace(imageExtensionRe, `${suffix}${extension}`);
-        urlObject.path = urlObject.path.replace(tileURLAPIPrefixRe, '/');
-        urlObject.path = `/v4${urlObject.path}`;
-
-        const accessToken = this._customAccessToken || getAccessToken(urlObject.params) || config.ACCESS_TOKEN;
-        if (config.REQUIRE_ACCESS_TOKEN && accessToken && this._skuToken) {
-            urlObject.params.push(`sku=${this._skuToken}`);
-        }
-
+console.log('2. sprite:'+this._makeAPIURL(urlObject, accessToken))
         return this._makeAPIURL(urlObject, accessToken);
-    }
-
-    canonicalizeTileURL(url: string, removeAccessToken: boolean) {
-        const version = "/v4/";
-        // matches any file extension specified by a dot and one or more alphanumeric characters
-        const extensionRe = /\.[\w]+$/;
-
-        const urlObject = parseUrl(url);
-        // Make sure that we are dealing with a valid Mapbox tile URL.
-        // Has to begin with /v4/, with a valid filename + extension
-        if (!urlObject.path.match(/(^\/v4\/)/) || !urlObject.path.match(extensionRe)) {
-            // Not a proper Mapbox tile URL.
-            return url;
-        }
-        // Reassemble the canonical URL from the parts we've parsed before.
-        let result = "mapbox://tiles/";
-        result +=  urlObject.path.replace(version, '');
-
-        // Append the query string, minus the access token parameter.
-        let params = urlObject.params;
-        if (removeAccessToken) {
-            params = params.filter(p => !p.match(/^access_token=/));
-        }
-        if (params.length) result += `?${params.join('&')}`;
-        return result;
-    }
-
-    canonicalizeTileset(tileJSON: TileJSON, sourceURL?: string) {
-        const removeAccessToken = sourceURL ? isMapboxURL(sourceURL) : false;
-        const canonical = [];
-        for (const url of tileJSON.tiles || []) {
-            if (isMapboxHTTPURL(url)) {
-                canonical.push(this.canonicalizeTileURL(url, removeAccessToken));
-            } else {
-                canonical.push(url);
-            }
-        }
-        return canonical;
     }
 
     _makeAPIURL(urlObject: UrlObject, accessToken: string | null | void): string {
@@ -180,13 +77,15 @@ export class RequestManager {
         if (!config.REQUIRE_ACCESS_TOKEN) return formatUrl(urlObject);
 
         accessToken = accessToken || config.ACCESS_TOKEN;
+/*
         if (!accessToken)
             throw new Error(`An API access token is required to use Mapbox GL. ${help}`);
         if (accessToken[0] === 's')
             throw new Error(`Use a public access token (pk.*) with Mapbox GL, not a secret access token (sk.*). ${help}`);
-
+*/
         urlObject.params = urlObject.params.filter((d) => d.indexOf('access_token') === -1);
         urlObject.params.push(`access_token=${accessToken}`);
+
         return formatUrl(urlObject);
     }
 }
@@ -195,8 +94,10 @@ function isMapboxURL(url: string) {
     return url.indexOf('mapbox:') === 0;
 }
 
+
 const mapboxHTTPURLRe = /^((https?:)?\/\/)?([^\/]+\.)?mapbox\.c(n|om)(\/|\?|$)/i;
 function isMapboxHTTPURL(url: string): boolean {
+// console.log('check mapbox url '+url+' : '+mapboxHTTPURLRe.test(url));
     return mapboxHTTPURLRe.test(url);
 }
 
@@ -481,6 +382,3 @@ export const postTurnstileEvent = turnstileEvent_.postTurnstileEvent.bind(turnst
 
 const mapLoadEvent_ = new MapLoadEvent();
 export const postMapLoadEvent = mapLoadEvent_.postMapLoadEvent.bind(mapLoadEvent_);
-
-/***** END WARNING - REMOVAL OR MODIFICATION OF THE
-PRECEDING CODE VIOLATES THE MAPBOX TERMS OF SERVICE  ******/

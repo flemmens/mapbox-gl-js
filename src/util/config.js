@@ -3,7 +3,6 @@
 type Config = {|
   API_URL: string,
   EVENTS_URL: ?string,
-  FEEDBACK_URL: string,
   REQUIRE_ACCESS_TOKEN: boolean,
   ACCESS_TOKEN: ?string,
   MAX_PARALLEL_IMAGE_REQUESTS: number
@@ -21,7 +20,6 @@ const config: Config = {
             return null;
         }
     },
-    FEEDBACK_URL: 'https://apps.mapbox.com/feedback',
     REQUIRE_ACCESS_TOKEN: true,
     ACCESS_TOKEN: null,
     MAX_PARALLEL_IMAGE_REQUESTS: 16

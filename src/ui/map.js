@@ -18,7 +18,6 @@ import Camera from './camera';
 import LngLat from '../geo/lng_lat';
 import LngLatBounds from '../geo/lng_lat_bounds';
 import Point from '@mapbox/point-geometry';
-import AttributionControl from './control/attribution_control';
 import LogoControl from './control/logo_control';
 import isSupported from '@mapbox/mapbox-gl-supported';
 import {RGBAImage} from '../util/image';
@@ -101,7 +100,6 @@ type MapOptions = {
     renderWorldCopies?: boolean,
     maxTileCacheSize?: number,
     transformRequest?: RequestTransformFunction,
-    accessToken: string,
     locale?: Object
 };
 
@@ -139,7 +137,7 @@ const defaultOptions = {
     pitchWithRotate: true,
 
     hash: false,
-    attributionControl: true,
+    attributionControl: false,
 
     failIfMajorPerformanceCaveat: false,
     preserveDrawingBuffer: false,
@@ -243,7 +241,6 @@ const defaultOptions = {
  * @param {boolean} [options.collectResourceTiming=false] If `true`, Resource Timing API information will be collected for requests made by GeoJSON and Vector Tile web workers (this information is normally inaccessible from the main Javascript thread). Information will be returned in a `resourceTiming` property of relevant `data` events.
  * @param {number} [options.fadeDuration=300] Controls the duration of the fade-in/fade-out animation for label collisions, in milliseconds. This setting affects all symbol layers. This setting does not affect the duration of runtime styling transitions or raster tile cross-fading.
  * @param {boolean} [options.crossSourceCollisions=true] If `true`, symbols from multiple sources can collide with each other during collision detection. If `false`, collision detection is run separately for the symbols in each source.
- * @param {string} [options.accessToken=null] If specified, map will use this token instead of the one defined in mapboxgl.accessToken.
  * @param {Object} [options.locale=null] A patch to apply to the default localization table for UI strings, e.g. control tooltips. The `locale` object maps namespaced UI string IDs to translated strings in the target language; see `src/ui/default_locale.js` for an example with all supported string IDs. The object may specify all UI strings (thereby adding support for a new translation) or only a subset of strings (thereby patching the default translation table).
  * @example
  * var map = new mapboxgl.Map({
@@ -401,7 +398,7 @@ class Map extends Camera {
         this._locale = extend({}, defaultLocale, options.locale);
         this._clickTolerance = options.clickTolerance;
 
-        this._requestManager = new RequestManager(options.transformRequest, options.accessToken);
+        this._requestManager = new RequestManager(options.transformRequest);
 
         if (typeof options.container === 'string') {
             this._container = window.document.getElementById(options.container);
@@ -466,8 +463,8 @@ class Map extends Camera {
         this._localIdeographFontFamily = options.localIdeographFontFamily;
         if (options.style) this.setStyle(options.style, {localIdeographFontFamily: options.localIdeographFontFamily});
 
-        if (options.attributionControl)
-            this.addControl(new AttributionControl({customAttribution: options.customAttribution}));
+//        if (options.attributionControl)
+//            this.addControl(new AttributionControl({customAttribution: options.customAttribution}));
 
         this.addControl(new LogoControl(), options.logoPosition);
 
@@ -1373,7 +1370,7 @@ class Map extends Camera {
 
     _diffStyle(style: StyleSpecification | string,  options?: {diff?: boolean} & StyleOptions) {
         if (typeof style === 'string') {
-            const url = this._requestManager.normalizeStyleURL(style);
+            const url = style;
             const request = this._requestManager.transformRequest(url, ResourceType.Style);
             getJSON(request, (error: ?Error, json: ?Object) => {
                 if (error) {
