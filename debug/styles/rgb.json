@@ -1,6 +1,6 @@
 {
   "version": 8,
-  "name": "Google map",
+  "name": "Mapbox rgb",
   "sources": {
 
     "rgb": {
@@ -22,7 +22,7 @@
       "type": "raster",
       "source": "rgb",
       "minzoom": 0,
-      "maxzoom": 22
+      "maxzoom": 20
     }
   ]
 }

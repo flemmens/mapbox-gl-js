@@ -47,6 +47,8 @@
 <script src='../dist/mapbox-gl-dev.js'></script>
 <script>
 
+// ne sert plus que pour les sprites car gén 2 fichiers png&json
+// cfr. /util/mapbox.js
 mapboxgl.accessToken = "pk.eyJ1IjoienN0YWRsZXIiLCJhIjoiY2lvbDc5Zzl6MDAwc3Z2bTZ6NDNybDM3dSJ9.vxR1WVn26mEtpEk9MzdiUA";
 
 var map = window.map = new mapboxgl.Map({
@@ -55,9 +57,9 @@ var map = window.map = new mapboxgl.Map({
   center: [34.461, -93.822],
 //  style: 'mapbox://styles/mapbox/streets-v11',
 //  style: '../debug/styles/osm.json',
-//  style: '../debug/styles/rgb.json',
+  style: '../debug/styles/rgb.json',
 //    style: '../debug/styles/be.json',
-  style: '../debug/styles/mapbox.json',
+//  style: '../debug/styles/mapbox.json',
   hash: true
 });
 

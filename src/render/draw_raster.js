@@ -17,6 +17,7 @@ import type {OverscaledTileID} from '../source/tile_id';
 export default drawRaster;
 
 function drawRaster(painter: Painter, sourceCache: SourceCache, layer: RasterStyleLayer, tileIDs: Array<OverscaledTileID>) {
+
     if (painter.renderPass !== 'translucent') return;
     if (layer.paint.get('raster-opacity') === 0) return;
     if (!tileIDs.length) return;
