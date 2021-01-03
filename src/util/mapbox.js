@@ -94,17 +94,6 @@ function isMapboxURL(url: string) {
     return url.indexOf('mapbox:') === 0;
 }
 
-
-const mapboxHTTPURLRe = /^((https?:)?\/\/)?([^\/]+\.)?mapbox\.c(n|om)(\/|\?|$)/i;
-function isMapboxHTTPURL(url: string): boolean {
-// console.log('check mapbox url '+url+' : '+mapboxHTTPURLRe.test(url));
-    return mapboxHTTPURLRe.test(url);
-}
-
-function hasCacheDefeatingSku(url: string) {
-    return url.indexOf('sku=') > 0 && isMapboxHTTPURL(url);
-}
-
 function getAccessToken(params: Array<string>): string | null {
     for (const param of params) {
         const match = param.match(/^access_token=(.*)$/);
@@ -134,8 +123,6 @@ function formatUrl(obj: UrlObject): string {
     const params = obj.params.length ? `?${obj.params.join('&')}` : '';
     return `${obj.protocol}://${obj.authority}${obj.path}${params}`;
 }
-
-export {isMapboxURL, isMapboxHTTPURL, hasCacheDefeatingSku};
 
 const telemEventKey = 'mapbox.eventData';
 
@@ -288,7 +275,7 @@ export class MapLoadEvent extends TelemetryEvent {
         if (config.EVENTS_URL &&
             customAccessToken || config.ACCESS_TOKEN &&
             Array.isArray(tileUrls) &&
-            tileUrls.some(url => isMapboxURL(url) || isMapboxHTTPURL(url))) {
+            tileUrls.some(url => isMapboxURL(url))) {
             this.queueRequest({id: mapId, timestamp: Date.now()}, customAccessToken);
         }
     }
@@ -328,7 +315,7 @@ export class TurnstileEvent extends TelemetryEvent {
         if (config.EVENTS_URL &&
             config.ACCESS_TOKEN &&
             Array.isArray(tileUrls) &&
-            tileUrls.some(url => isMapboxURL(url) || isMapboxHTTPURL(url))) {
+            tileUrls.some(url => isMapboxURL(url))) {
             this.queueRequest(Date.now(), customAccessToken);
         }
     }

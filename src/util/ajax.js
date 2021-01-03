@@ -2,7 +2,6 @@
 
 import window from './window';
 import {extend, warnOnce, isWorker} from './util';
-import {isMapboxHTTPURL, hasCacheDefeatingSku} from './mapbox';
 import config from './config';
 import assert from 'assert';
 import {cacheGet, cachePut} from './tile_request_cache';
@@ -73,8 +72,8 @@ class AJAXError extends Error {
     status: number;
     url: string;
     constructor(message: string, status: number, url: string) {
-        if (status === 401 && isMapboxHTTPURL(url)) {
-            message += ': you may have provided an invalid Mapbox access token. See https://www.mapbox.com/api-documentation/#access-tokens-and-token-scopes';
+        if (status === 401) {
+            message += ': unable to load tile';
         }
         super(message);
         this.status = status;
@@ -117,7 +116,7 @@ function makeFetchRequest(requestParameters: RequestParameters, callback: Respon
     let complete = false;
     let aborted = false;
 
-    const cacheIgnoringSearch = hasCacheDefeatingSku(request.url);
+    const cacheIgnoringSearch = false;
 
     if (requestParameters.type === 'json') {
         request.headers.set('Accept', 'application/json');
