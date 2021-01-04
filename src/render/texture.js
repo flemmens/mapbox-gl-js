@@ -48,6 +48,7 @@ class Texture {
         this.format = format;
         this.texture = context.gl.createTexture();
         this.update(image, options);
+// console.log('create texture')
     }
 
     update(image: TextureImage, options: ?{premultiply?: boolean, useMipmap?: boolean}, position?: { x: number, y: number }) {
@@ -65,7 +66,7 @@ class Texture {
 
         if (resize) {
             this.size = [width, height];
-
+// console.log('tex w: '+width) -> tjr 256 ?
             if (image instanceof HTMLImageElement || image instanceof HTMLCanvasElement || image instanceof HTMLVideoElement || image instanceof ImageData || (ImageBitmap && image instanceof ImageBitmap)) {
                 gl.texImage2D(gl.TEXTURE_2D, 0, this.format, this.format, gl.UNSIGNED_BYTE, image);
             } else {

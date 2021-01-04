@@ -56,6 +56,11 @@ const rasterUniformValues = (
 
 ): UniformValues<RasterUniformsType> => {
 
+// console.log('contrast: '+layer.paint.get('raster-contrast'));
+// alert('temp')
+
+// semble dessiner 2 couche, une avec les tiles parent zoomées
+
   return {
     'u_matrix': matrix,
     'u_tl_parent': parentTL,
@@ -68,11 +73,13 @@ const rasterUniformValues = (
     'u_brightness_low': layer.paint.get('raster-brightness-min'),
     'u_brightness_high': layer.paint.get('raster-brightness-max'),
     'u_saturation_factor': saturationFactor(layer.paint.get('raster-saturation')),
-    'u_contrast_factor': contrastFactor(layer.paint.get('raster-contrast')),
+    'u_contrast_factor': layer.paint.get('raster-contrast'),
     'u_spin_weights': spinWeights(layer.paint.get('raster-hue-rotate')),
     'u_zoom': zoom
   };
 };
+
+
 
 function spinWeights(angle) {
     angle *= Math.PI / 180;

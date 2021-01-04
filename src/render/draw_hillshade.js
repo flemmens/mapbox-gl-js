@@ -29,6 +29,7 @@ function drawHillshade(painter: Painter, sourceCache: SourceCache, layer: Hillsh
 
     for (const coord of coords) {
         const tile = sourceCache.getTile(coord);
+
         if (tile.needsHillshadePrepare && painter.renderPass === 'offscreen') {
             prepareHillshade(painter, tile, layer, depthMode, StencilMode.disabled, colorMode);
         } else if (painter.renderPass === 'translucent') {
@@ -59,6 +60,7 @@ function renderHillshade(painter, tile, layer, depthMode, stencilMode, colorMode
 
 // hillshade rendering is done in two steps. the prepare step first calculates the slope of the terrain in the x and y
 // directions for each pixel, and saves those values to a framebuffer texture in the r and g channels.
+
 function prepareHillshade(painter, tile, layer, depthMode, stencilMode, colorMode) {
     const context = painter.context;
     const gl = context.gl;

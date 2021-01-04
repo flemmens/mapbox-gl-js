@@ -17,6 +17,7 @@ uniform float u_contrast_factor;
 uniform vec3 u_spin_weights;
 
 uniform float u_zoom;
+uniform vec2 u_dimension;
 
 // uniform vec4 u_unpack;
 float height(vec2 p) {
@@ -84,7 +85,10 @@ void main() {
   float azimuthRad = radians(360.0 - azimuth + 90.0);
 
   float a,b,c,d,e,f,g,h,i;
-  vec2 m = 1.0 / vec2(256.0, 256.0);
+
+  // calculer en fonction du zoom et de la taille du canvas
+  // vec2 m = 1.0 / vec2(256.0, 256.0);
+  vec2 m = 1.0 / vec2(20.0, 20.0);
 
   // elev matrix
   a = height(v_pos0 + vec2(-m.x, -m.y));
@@ -141,13 +145,16 @@ void main() {
 		);
 	}
 	gl_FragColor = color;
-  gl_FragColor = mix(color, vec4(0.0, 0.0, 0.0, slope_val), 0.5);
   gl_FragColor = mix(color, vec4(0.0, 0.0, 0.0, hill_val), 0.2);
 
-  gl_FragColor = mix(gl_FragColor, vec4(0.0, 0.0, 0.0, slope_val), 0.2);
+  gl_FragColor = mix(gl_FragColor, vec4(0.0, 0.0, 0.0, slope_val), u_contrast_factor);
 
-//  gl_FragColor = vec4(0.0, 0.0, 0.0, slope_val);
+  gl_FragColor = vec4(0.0, 0.0, 0.0, slope_val);
 //  gl_FragColor = vec4(0.0, 0.0, 0.0, hill_val);
+
+// gl_FragColor = color; // couleur de la rampe
+
+gl_FragColor = texture2D(u_image0, v_pos0); // couleur d'origine
 
 
 #ifdef OVERDRAW_INSPECTOR

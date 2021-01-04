@@ -5727,6 +5727,29 @@
       },
       "property-type": "data-constant"
     },
+    "hillshade-test": {
+      "type": "number",
+      "doc": "test added value",
+      "default": 123,
+      "minimum": 0,
+      "maximum": 1,
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.43.0",
+          "android": "6.0.0",
+          "ios": "4.0.0",
+          "macos": "0.7.0"
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom"
+        ]
+      },
+      "property-type": "data-constant"
+    },
     "hillshade-shadow-color": {
       "type": "color",
       "default": "#000000",

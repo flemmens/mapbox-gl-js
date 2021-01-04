@@ -1,14 +1,21 @@
 {
   "version": 8,
   "name": "Mapbox rgb",
+
   "sources": {
 
     "rgb": {
-      "type": "raster",
+      "type": "raster-dem",
       "tiles": [
         "https://api.mapbox.com/v4/mapbox.terrain-rgb/{z}/{x}/{y}.pngraw?access_token=pk.eyJ1IjoiZmxlbW1lbnMiLCJhIjoiZW5MaUZKYyJ9.blF63vFqEGh9RfbgEmA29A"
       ],
-      "tileSize": 256
+      "tileSize": 256,
+      "maxzoom": 14
+    },
+
+    "composite": {
+      "type": "vector",
+      "tiles": ["http://a.tiles.mapbox.com/v4/mapbox.mapbox-streets-v8/{z}/{x}/{y}.vector.pbf?access_token=pk.eyJ1IjoienN0YWRsZXIiLCJhIjoiY2lvbDc5Zzl6MDAwc3Z2bTZ6NDNybDM3dSJ9.vxR1WVn26mEtpEk9MzdiUA", "http://b.tiles.mapbox.com/v4/mapbox.mapbox-streets-v8,mapbox.mapbox-terrain-v2/{z}/{x}/{y}.vector.pbf?access_token=pk.eyJ1IjoienN0YWRsZXIiLCJhIjoiY2lvbDc5Zzl6MDAwc3Z2bTZ6NDNybDM3dSJ9.vxR1WVn26mEtpEk9MzdiUA"]
     }
 
   },
@@ -19,10 +26,20 @@
   "layers": [
     {
       "id": "mapbox-rgb",
-      "type": "raster",
       "source": "rgb",
       "minzoom": 0,
-      "maxzoom": 20
+      "maxzoom": 20,
+      "type": "hillshade"
+    },
+    {
+      "id": "water",
+      "type": "fill",
+      "source": "composite",
+      "source-layer": "water",
+      "paint": {
+        "fill-color": "#31849c",
+        "fill-opacity": 0.8
+      }
     }
   ]
 }

@@ -169,6 +169,9 @@
     "test-cov": "nyc --require=@mapbox/flow-remove-types/register --reporter=text-summary --reporter=lcov --cache run-s test-unit test-expressions test-query test-render",
     "prepublishOnly": "run-s prepare-publish build-flow-types build-dev build-prod-min build-prod build-csp build-css build-style-spec test-build diff-tarball",
     "print-release-url": "node build/print-release-url.js",
+
+    "gen-style": "node -r @mapbox/flow-remove-types/register -r esm build/generate-style-code.js",
+
     "codegen": "build/run-node build/generate-style-code.js && build/run-node build/generate-struct-arrays.js"
   },
   "files": [

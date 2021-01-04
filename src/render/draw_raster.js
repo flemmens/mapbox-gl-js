@@ -18,6 +18,8 @@ export default drawRaster;
 
 function drawRaster(painter: Painter, sourceCache: SourceCache, layer: RasterStyleLayer, tileIDs: Array<OverscaledTileID>) {
 
+// console.log('drawraster '+document.getElementById('value').innerHTML)
+
     if (painter.renderPass !== 'translucent') return;
     if (layer.paint.get('raster-opacity') === 0) return;
     if (!tileIDs.length) return;
@@ -66,7 +68,7 @@ function drawRaster(painter: Painter, sourceCache: SourceCache, layer: RasterSty
         } else {
             tile.texture.bind(textureFilter, gl.CLAMP_TO_EDGE, gl.LINEAR_MIPMAP_NEAREST);
         }
-
+// console.log(tile);
         const uniformValues = rasterUniformValues(posMatrix, parentTL || [0, 0], parentScaleBy || 1, fade, layer, coord.overscaledZ);
 
         if (source instanceof ImageSource) {
