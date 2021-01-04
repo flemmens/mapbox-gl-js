@@ -2,9 +2,9 @@
 precision highp float;
 #endif
 
-uniform sampler2D u_image;
 varying vec2 v_pos;
-// uniform vec2 u_dimension;
+
+uniform sampler2D u_image;
 uniform float u_zoom;
 
 #define PI 3.141592653589793238462
@@ -71,16 +71,29 @@ void main() {
         (g + h + h + i) - (a + b + b + c)
     ) / exag;
 
+    // on utilise rg pour stocker la valeur du slope et b pour l'élévation du pixel central
+    vec4 store = vec4(deriv / 2.0 + 0.5, (e+11000.0)/20000.0, 1.0);
 
-    // on utilise r+g pour stocker la valeur du slope
+    gl_FragColor = store;
+
+
+
+
+
+
+
+/*
+    vec2 deriv2 = ((store.rg * 2.0) - 1.0);
+
 //    gl_FragColor = clamp(vec4(deriv.x / 2.0 + 0.5, deriv.y / 2.0 + 0.5, 1.0, 1.0), 0.0, 1.0);
 
-    gl_FragColor = vec4(vec2(deriv / 2.0 + 0.5), 0.0, 1.0);
-//    gl_FragColor.rg = vec2(deriv / 2.0 + 0.5);
+    gl_FragColor = vec4( (deriv+110000.0)/200000.0 , (e+11000.0)/20000.0, 1.0);
 
+
+/*
+//    gl_FragColor.rg = vec2(deriv / 2.0 + 0.5);
 //    gl_FragColor = vec4(deriv.x, deriv.y, 0.0, 0.0);
 
-    vec2 deriv2 = ((vec2(deriv / 2.0 + 0.5) * 2.0) - 1.0);
     float slopeRad = atan(sqrt(pow(deriv2.x, 2.0) + pow(deriv2.y, 2.0)));
 
 
@@ -90,15 +103,6 @@ void main() {
 
     gl_FragColor = slope_col;
 //    gl_FragColor = vec4(0.0, 0.0, 0.0, slopeRad);
-
-
-/*
-    float rateOfChangeX = ((c + (2.0*f) + i) - (a + (2.0*d) + g)) / cellsize
-    float rateOfChangeY = ((g + (2.0*h) + i) - (a + (2.0*b) + c)) / cellsize
-
-    // Slope
-    float slopeRad = atan(1.0 * sqrt(pow(rateOfChangeX, 2.0) + pow(rateOfChangeY, 2.0)));
-*/
 
 
     // Aspect
@@ -140,16 +144,18 @@ void main() {
   	}
   	gl_FragColor = color;
 
-//  	gl_FragColor = mix(gl_FragColor, color, 0.6);
-if (slopeRad > 0.5)
-  gl_FragColor = mix(slope_col, color, 0.4);
-else
-  gl_FragColor = mix(slope_col, color, 0.7);
 
   gl_FragColor = mix(hill_col, slope_col, 0.5);
 
 // gl_FragColor = vec4(0.0,0.0,1.0,1.0); // test blue
 // gl_FragColor = texture2D(u_image, v_pos);
+gl_FragColor = slope_col;
+
+
+float slopeRad = atan(sqrt(pow(deriv2.x, 2.0) + pow(deriv2.y, 2.0)));
+vec4 slope_col = vec4(1.0-slopeRad, 1.0-slopeRad, 1.0-slopeRad, 1.0);
+gl_FragColor = slope_col;
+*/
 
 #ifdef OVERDRAW_INSPECTOR
   gl_FragColor = vec4(1.0,0.0,0.0,1.0);

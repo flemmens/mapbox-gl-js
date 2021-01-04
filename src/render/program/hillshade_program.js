@@ -18,7 +18,6 @@ import type {UniformValues, UniformLocations} from '../uniform_binding';
 import type Tile from '../../source/tile';
 import type Painter from '../painter';
 import type HillshadeStyleLayer from '../../style/style_layer/hillshade_style_layer';
-import type DEMData from '../../data/dem_data';
 import type {OverscaledTileID} from '../../source/tile_id';
 
 export type HillshadeUniformsType = {|
@@ -28,7 +27,9 @@ export type HillshadeUniformsType = {|
     'u_light': Uniform2f,
     'u_shadow': UniformColor,
     'u_highlight': UniformColor,
-    'u_accent': UniformColor
+    'u_accent': UniformColor,
+    'u_zoom': Uniform1f,
+    'u_test': Uniform1f
 |};
 
 export type HillshadePrepareUniformsType = {|
@@ -44,7 +45,9 @@ const hillshadeUniforms = (context: Context, locations: UniformLocations): Hills
     'u_light': new Uniform2f(context, locations.u_light),
     'u_shadow': new UniformColor(context, locations.u_shadow),
     'u_highlight': new UniformColor(context, locations.u_highlight),
-    'u_accent': new UniformColor(context, locations.u_accent)
+    'u_accent': new UniformColor(context, locations.u_accent),
+    'u_zoom': new Uniform1f(context, locations.u_zoom),
+    'u_test': new Uniform1f(context, locations.u_test)
 });
 
 const hillshadePrepareUniforms = (context: Context, locations: UniformLocations): HillshadePrepareUniformsType => ({
@@ -52,6 +55,8 @@ const hillshadePrepareUniforms = (context: Context, locations: UniformLocations)
     'u_image': new Uniform1i(context, locations.u_image),
     'u_zoom': new Uniform1f(context, locations.u_zoom)
 });
+
+// Render
 
 const hillshadeUniformValues = (
     painter: Painter,
@@ -61,6 +66,9 @@ const hillshadeUniformValues = (
     const shadow = layer.paint.get("hillshade-shadow-color");
     const highlight = layer.paint.get("hillshade-highlight-color");
     const accent = layer.paint.get("hillshade-accent-color");
+    const test = layer.paint.get('hillshade-test');
+
+// console.log('zoom: '+tile.tileID.overscaledZ+', test: '+test);
 
     let azimuthal = layer.paint.get('hillshade-illumination-direction') * (Math.PI / 180);
     // modify azimuthal angle by map rotation if light is anchored at the viewport
@@ -75,19 +83,24 @@ const hillshadeUniformValues = (
         'u_light': [layer.paint.get('hillshade-exaggeration'), azimuthal],
         'u_shadow': shadow,
         'u_highlight': highlight,
-        'u_accent': accent
+        'u_accent': accent,
+        'u_zoom': tile.tileID.overscaledZ,
+        'u_test': test
     };
 };
 
+// Prepare
+
 const hillshadeUniformPrepareValues = (
-    tileID: OverscaledTileID,
-    dem: DEMData
+    tileID: OverscaledTileID
 ): UniformValues<HillshadePrepareUniformsType> => {
 
     const matrix = mat4.create();
+
     // Flip rendering at y axis.
     mat4.ortho(matrix, 0, EXTENT, -EXTENT, 0, 0, 1);
     mat4.translate(matrix, matrix, [0, -EXTENT, 0]);
+// console.log('zoom (prepare): '+tileID.overscaledZ);
 
     return {
         'u_matrix': matrix,

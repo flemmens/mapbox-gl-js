@@ -29,7 +29,10 @@
       "source": "rgb",
       "minzoom": 0,
       "maxzoom": 20,
-      "type": "hillshade"
+      "type": "hillshade",
+      "paint": {
+        "hillshade-test": 0.45
+      }
     },
     {
       "id": "water",
@@ -37,8 +40,7 @@
       "source": "composite",
       "source-layer": "water",
       "paint": {
-        "fill-color": "#31849c",
-        "fill-opacity": 0.8
+        "fill-color": "#9cbcce"
       }
     }
   ]

@@ -123,7 +123,7 @@ map.addControl(new mapboxgl.NavigationControl(), 'top-left');
 function change(v)
 {
   document.getElementById('value').innerHTML = v;
-  map.setPaintProperty('mapbox-rgb', 'raster-contrast', v*1);
+  map.setPaintProperty('mapbox-rgb', 'hillshade-test', v*1);
 }
 
 </script>

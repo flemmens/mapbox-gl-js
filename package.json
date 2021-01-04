@@ -170,7 +170,7 @@
     "prepublishOnly": "run-s prepare-publish build-flow-types build-dev build-prod-min build-prod build-csp build-css build-style-spec test-build diff-tarball",
     "print-release-url": "node build/print-release-url.js",
 
-    "gen-style": "node -r @mapbox/flow-remove-types/register -r esm build/generate-style-code.js",
+    "gen-style": "node -r @mapbox/flow-remove-types/register -r esm build/generate-style-code.js && node -r @mapbox/flow-remove-types/register -r esm build/generate-flow-typed-style-spec.js",
 
     "codegen": "build/run-node build/generate-style-code.js && build/run-node build/generate-struct-arrays.js"
   },

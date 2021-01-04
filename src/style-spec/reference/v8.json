@@ -5730,7 +5730,7 @@
     "hillshade-test": {
       "type": "number",
       "doc": "test added value",
-      "default": 123,
+      "default": 0.5,
       "minimum": 0,
       "maximum": 1,
       "transition": true,
