@@ -83,11 +83,11 @@ void main() {
   colours[3] = vec4(0.6,  0.4, 0.3, 2000.0);
   colours[4] = vec4(1.0,  1.0, 1.0, 4000.0);
 
-  vec4 color = vec4(colours[0].rgb, 1.0);
+  vec3 color = colours[0].rgb;
 
   for (int n=0; n<5; n++) {
-    color.rgb = mix(
-      color.rgb,
+    color = mix(
+      color,
       colours[n+1].rgb,
       smoothstep( colours[n].a, colours[n+1].a, elev )
     );
@@ -140,15 +140,15 @@ void main() {
   vec4 slope_col = vec4(slopeRad, slopeRad, slopeRad, 1.0);
   vec4 hill_col  = vec4(hillshade, hillshade, hillshade, 1.0);
 
-  vec4 a = mix(white, slope_col, u_op_slope);
-  vec4 b = mix(white, hill_col, u_op_hillshade);
-  vec4 comb = a*b;
-
-  float c = mix(1.0, slopeRad, u_op_slope);
+  float a = mix(1.0, slopeRad, u_op_slope);
+  float b = mix(1.0, hillshade, u_op_hillshade);
+  float c = a*b;
+  vec3 comb = vec3(c,c,c);
 
   // colors
-  vec4 mixColor = comb * color;   // multiply transition
-  vec4 final = mix(comb, mixColor, u_op_color);
+  vec3 mixColor = comb * color;   // multiply transition
+  vec3 final = mix(comb, mixColor, u_op_color);
+  // vec3 final = mix(comb, color, u_op_color);
 
   // Global adjustements
 
@@ -164,7 +164,7 @@ void main() {
 
   // Rendu final
 
-  gl_FragColor = vec4(final.rgb, 1.0);
+  gl_FragColor = vec4(final, 1.0);
   // gl_FragColor = texture2D(u_image, v_pos);
 
 }
