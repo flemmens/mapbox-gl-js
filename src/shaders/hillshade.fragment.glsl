@@ -26,10 +26,12 @@ uniform float u_op_slope;
 uniform float u_op_color;
 
 // global
-
 uniform float u_glob_exposure;
 uniform float u_glob_contrast;
 uniform float u_glob_brightness;
+
+// ramp
+uniform vec4 u_glob_ramp[99];
 
 #define PI 3.141592653589793238462
 
@@ -76,13 +78,9 @@ void main() {
 
 
   // Color ramp (ne calculer que si affiché)
-  vec4 colours[5];
-  colours[0] = vec4(0.1,  0.1, 0.5, 0.0);
-  colours[1] = vec4(0.4, 0.55, 0.3, 1.0);
-  colours[2] = vec4(0.9,  0.9, 0.6, 300.0);
-  colours[3] = vec4(0.6,  0.4, 0.3, 2000.0);
-  colours[4] = vec4(1.0,  1.0, 1.0, 4000.0);
 
+/*
+  vec4 colours[99];
   vec3 color = colours[0].rgb;
 
   for (int n=0; n<5; n++) {
@@ -92,19 +90,19 @@ void main() {
       smoothstep( colours[n].a, colours[n+1].a, elev )
     );
   }
+*/
 
-/*
-  float elev_start = -99999.0;
+  float elev_start = -11000.0;
   float elev_end = elev_start;
 
-  vec4 colorA = vec4(colours[0].rgb, 1.0);
-  vec4 colorB = colorA;
+  vec3 colorA = u_glob_ramp[0].rgb;
+  vec3 colorB = colorA;
 
-  for(int n=0; n<5; n++) {
-    elev_end = colours[n].a;
-    colorB = vec4(colours[n].rgb, 1.0);
+  for(int n=0; n<99; n++) {
+    elev_end = u_glob_ramp[n].a;
+    colorB = u_glob_ramp[n].rgb;
 
-    if (elev_end > elev)
+    if (elev_end > elev)          // Attention, on ne vérifie pas la validité du tableau, doit être fait avant !
       break;
     else {
       elev_start = elev_end;
@@ -112,9 +110,8 @@ void main() {
     }
   }
 
-  float m  = (elev - elev_start) / (elev_end - elev_start);
-  vec4 color = mix(colorA, colorB, m);
-*/
+  float m = (elev - elev_start) / (elev_end - elev_start);
+  vec3 color = mix(colorA, colorB, m);
 
 
   // Valeurs finales

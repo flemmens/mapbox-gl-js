@@ -8,7 +8,8 @@ import {
     Uniform2f,
     UniformColor,
     UniformMatrix4f,
-    Uniform4f
+    Uniform4f,
+    UniformArray4f
 } from '../uniform_binding';
 import EXTENT from '../../data/extent';
 import MercatorCoordinate from '../../geo/mercator_coordinate';
@@ -41,7 +42,8 @@ export type HillshadeUniformsType = {|
     'u_op_color': Uniform1f,
     'u_glob_brightness': Uniform1f,
     'u_glob_contrast': Uniform1f,
-    'u_glob_exposure': Uniform1f
+    'u_glob_exposure': Uniform1f,
+    'u_glob_ramp': UniformArray4f
 |};
 
 export type HillshadePrepareUniformsType = {|
@@ -71,7 +73,8 @@ const hillshadeUniforms = (context: Context, locations: UniformLocations): Hills
     'u_op_color': new Uniform1f(context, locations.u_op_color),
     'u_glob_brightness': new Uniform1f(context, locations.u_glob_brightness),
     'u_glob_contrast': new Uniform1f(context, locations.u_glob_contrast),
-    'u_glob_exposure': new Uniform1f(context, locations.u_glob_exposure)
+    'u_glob_exposure': new Uniform1f(context, locations.u_glob_exposure),
+    'u_glob_ramp': new UniformArray4f(context, locations.u_glob_ramp)
 });
 
 const hillshadePrepareUniforms = (context: Context, locations: UniformLocations): HillshadePrepareUniformsType => ({
@@ -106,7 +109,15 @@ const hillshadeUniformValues = (
     const glob_contrast   = layer.paint.get('global-contrast');
     const glob_exposure   = layer.paint.get('global-exposure');
 
+    // const glob_ramp   = layer.paint.get('global-ramp');   // Float32Array
+    const glob_ramp = [0.1, 0.1, 0.5, -5000.0, 0.607, 0.937, 0.949, 0.0, 0.4, 0.55, 0.3, 1.0, 0.9,  0.9, 0.6, 300.0, 0.6,  0.4, 0.3, 2000.0,1.0,  1.0, 1.0, 4000.0];
+    const nel = glob_ramp.length;
+
+    glob_ramp.push(glob_ramp[nel-4], glob_ramp[nel-3], glob_ramp[nel-2], 20000.0);   // on recopie la dernière valeur pour terminer le tableau
+
+// console.log(glob_ramp);
 // console.log('zoom: '+tile.tileID.overscaledZ+', test: '+test);
+
 
     let azimuthal = layer.paint.get('hillshade-illumination-direction') * (Math.PI / 180);
     // modify azimuthal angle by map rotation if light is anchored at the viewport
@@ -135,7 +146,8 @@ const hillshadeUniformValues = (
         'u_op_color': op_color,
         'u_glob_brightness': glob_brightness,
         'u_glob_contrast': glob_contrast,
-        'u_glob_exposure': glob_exposure
+        'u_glob_exposure': glob_exposure,
+        'u_glob_ramp': glob_ramp
     };
 };
 

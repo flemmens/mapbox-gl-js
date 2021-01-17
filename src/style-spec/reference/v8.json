@@ -5730,6 +5730,11 @@
 
 
 
+    "global-ramp": {
+      "type": "array",
+      "value": "number",
+      "property-type": "data-constant"
+    },
 
 
 
@@ -5757,53 +5762,6 @@
       "property-type": "data-constant"
     },
 
-    "global-mixhillslope": {
-      "type": "number",
-      "doc": "test added value",
-      "default": 0.45,
-      "minimum": 0,
-      "maximum": 1,
-      "transition": true,
-      "sdk-support": {
-        "basic functionality": {
-          "js": "0.43.0",
-          "android": "6.0.0",
-          "ios": "4.0.0",
-          "macos": "0.7.0"
-        }
-      },
-      "expression": {
-        "interpolated": true,
-        "parameters": [
-          "zoom"
-        ]
-      },
-      "property-type": "data-constant"
-    },
-
-    "global-mixcolor": {
-      "type": "number",
-      "doc": "test added value",
-      "default": 0.5,
-      "minimum": 0,
-      "maximum": 1,
-      "transition": true,
-      "sdk-support": {
-        "basic functionality": {
-          "js": "0.43.0",
-          "android": "6.0.0",
-          "ios": "4.0.0",
-          "macos": "0.7.0"
-        }
-      },
-      "expression": {
-        "interpolated": true,
-        "parameters": [
-          "zoom"
-        ]
-      },
-      "property-type": "data-constant"
-    },
 
 
     "layers-opacityHillshade": {

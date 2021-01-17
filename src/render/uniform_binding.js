@@ -133,6 +133,20 @@ class UniformMatrix4f extends Uniform<Float32Array> {
     }
 }
 
+const emptyArray4 = new Array();
+class UniformArray4f extends Uniform<Array> {
+    constructor(context: Context, location: WebGLUniformLocation) {
+        super(context, location);
+        this.current = emptyArray4;
+    }
+
+    // TO DO: tester la limite du nombre d'éléments (max 100)
+    set(v: Array): void {
+      this.current = v;
+      this.gl.uniform4fv(this.location, v);
+    }
+}
+
 export {
     Uniform,
     Uniform1i,
@@ -141,7 +155,8 @@ export {
     Uniform3f,
     Uniform4f,
     UniformColor,
-    UniformMatrix4f
+    UniformMatrix4f,
+    UniformArray4f
 };
 
 export type UniformBindings = {[_: string]: Uniform<any>};
