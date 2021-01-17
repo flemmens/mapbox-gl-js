@@ -1,0 +1,2 @@
+- base changes: https://timseverien.com/posts/2020-06-19-colour-correction-with-webgl/
+- https://www.shadertoy.com/view/MlcGD7

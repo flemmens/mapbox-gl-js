@@ -121,6 +121,9 @@
   },
   "esm": true,
   "scripts": {
+
+    "build-flp": "rollup -c --environment BUILD:production,MINIFY:true && cp ./dist/mapbox-gl.js /mnt/c/GITHUB/Elevation/front/public/lib",
+
     "build-dev": "rollup -c --environment BUILD:dev",
     "build-css": "postcss -o dist/mapbox-gl.css src/css/mapbox-gl.css",
 

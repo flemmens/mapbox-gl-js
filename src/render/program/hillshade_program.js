@@ -29,7 +29,15 @@ export type HillshadeUniformsType = {|
     'u_highlight': UniformColor,
     'u_accent': UniformColor,
     'u_zoom': Uniform1f,
-    'u_test': Uniform1f
+    'u_test': Uniform1f,
+    'u_azimuth': Uniform1f,
+    'u_zenith': Uniform1f,
+    'u_brightness': Uniform1f,
+    'u_contrast': Uniform1f,
+    'u_exposure': Uniform1f,
+    'u_zfactor': Uniform1f,
+    'u_mixhillslope': Uniform1f,
+    'u_mixcolor': Uniform1f
 |};
 
 export type HillshadePrepareUniformsType = {|
@@ -47,7 +55,15 @@ const hillshadeUniforms = (context: Context, locations: UniformLocations): Hills
     'u_highlight': new UniformColor(context, locations.u_highlight),
     'u_accent': new UniformColor(context, locations.u_accent),
     'u_zoom': new Uniform1f(context, locations.u_zoom),
-    'u_test': new Uniform1f(context, locations.u_test)
+    'u_test': new Uniform1f(context, locations.u_test),
+    'u_azimuth': new Uniform1f(context, locations.u_azimuth),
+    'u_zenith': new Uniform1f(context, locations.u_zenith),
+    'u_brightness': new Uniform1f(context, locations.u_brightness),
+    'u_contrast': new Uniform1f(context, locations.u_contrast),
+    'u_exposure': new Uniform1f(context, locations.u_exposure),
+    'u_zfactor': new Uniform1f(context, locations.u_zfactor),
+    'u_mixhillslope': new Uniform1f(context, locations.u_mixhillslope),
+    'u_mixcolor': new Uniform1f(context, locations.u_mixcolor)
 });
 
 const hillshadePrepareUniforms = (context: Context, locations: UniformLocations): HillshadePrepareUniformsType => ({
@@ -63,10 +79,19 @@ const hillshadeUniformValues = (
     tile: Tile,
     layer: HillshadeStyleLayer
 ): UniformValues<HillshadeUniformsType> => {
-    const shadow = layer.paint.get("hillshade-shadow-color");
-    const highlight = layer.paint.get("hillshade-highlight-color");
-    const accent = layer.paint.get("hillshade-accent-color");
-    const test = layer.paint.get('hillshade-test');
+    const shadow     = layer.paint.get("hillshade-shadow-color");
+    const highlight  = layer.paint.get("hillshade-highlight-color");
+    const accent     = layer.paint.get("hillshade-accent-color");
+    const test       = layer.paint.get('hillshade-test');
+    const azimuth    = layer.paint.get('hillshade-azimuth');
+    const zenith     = layer.paint.get('hillshade-zenith');
+    const brightness = layer.paint.get('hillshade-brightness');
+    const contrast   = layer.paint.get('hillshade-contrast');
+    const exposure   = layer.paint.get('hillshade-exposure');
+    const zfactor    = layer.paint.get('hillshade-zfactor');
+
+    const mixhillslope = layer.paint.get('global-mixhillslope');
+    const mixcolor     = layer.paint.get('global-mixcolor');
 
 // console.log('zoom: '+tile.tileID.overscaledZ+', test: '+test);
 
@@ -85,7 +110,15 @@ const hillshadeUniformValues = (
         'u_highlight': highlight,
         'u_accent': accent,
         'u_zoom': tile.tileID.overscaledZ,
-        'u_test': test
+        'u_test': test,
+        'u_azimuth': azimuth,
+        'u_zenith': zenith,
+        'u_brightness': brightness,
+        'u_contrast': contrast,
+        'u_exposure': exposure,
+        'u_zfactor': zfactor,
+        'u_mixhillslope': mixhillslope,
+        'u_mixcolor': mixcolor
     };
 };
 

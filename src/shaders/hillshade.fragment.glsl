@@ -8,23 +8,47 @@ uniform sampler2D u_image;
 uniform float u_zoom;
 uniform float u_test;
 
+uniform float u_azimuth;
+uniform float u_zenith;
+
+uniform vec2 u_light;
+uniform vec4 u_shadow;
+uniform vec4 u_highlight;
+
+uniform float u_zfactor;
+uniform float u_brightness;
+uniform float u_contrast;
+uniform float u_exposure;
+
+// global
+uniform float u_mixhillslope;
+uniform float u_mixcolor;
+
+
 #define PI 3.141592653589793238462
 
-float zenithRad = (90.0 - 45.0) * PI / 180.0;
-float azimuthRad = radians(360.0 - 315.0 + 90.0);
+float zenithRad = (90.0 - u_zenith) * PI / 180.0;
+float azimuthRad = radians(360.0 - u_azimuth + 90.0);
 
+
+// Fonctions d'ajustement
+
+// vec4 adjustBrightness(vec4 color, float value) {
+//   return vec4(color.rgb + value, color.a);
+// }
+
+// Shader
 
 void main() {
 
   vec4 store = texture2D(u_image, v_pos);
 
-  vec2  deriv  = (store.rg - 0.5) * 2.0;
-  vec2  deriv2 = ((store.rg * 2.0) - 1.0);
+  vec2  deriv  = ((store.rg - 0.5) * 2.0) * u_zfactor;
   float elev   = store.b * 20000.0 - 11000.0;
 
 
   // Slope
-  float slopeRad = atan(sqrt(pow(deriv2.x, 2.0) + pow(deriv2.y, 2.0)));
+  float slopeRad = atan(sqrt(pow(deriv.x, 2.0) + pow(deriv.y, 2.0)));
 
   // Aspect
   float aspectRad = 9.0;  // rad will never be 9.0 so this means flat
@@ -45,7 +69,7 @@ void main() {
   float hillshade = (cos(zenithRad) * cos(slopeRad)) + (sin(zenithRad) * sin(slopeRad) * cos(azimuthRad - aspectRad));
 
 
-  // Color ramp
+  // Color ramp (ne calculer que si affiché)
   vec4 colours[5];
   colours[0] = vec4(0.1,  0.1, 0.5, 0.0);
   colours[1] = vec4(0.4, 0.55, 0.3, 1.0);
@@ -66,15 +90,39 @@ void main() {
 
   // Valeurs finales
 
-  vec4 slope_col = vec4(1.0-slopeRad, 1.0-slopeRad, 1.0-slopeRad, 1.0);
+  slopeRad = 1.0-slopeRad;
+
+  // Light/shadow
+
+  // Brightness (-1 to 1)
+  hillshade = hillshade + u_brightness;
+
+  // Contrast (-1 to 1)
+  hillshade = 0.5 + (1.0 + u_contrast) * (hillshade - 0.5);
+
+  // Exposure (-1 to 1)
+  hillshade = (1.0 + u_exposure) * hillshade;
+
+  vec4 slope_col = vec4(slopeRad, slopeRad, slopeRad, 1.0);
   vec4 hill_col  = vec4(hillshade, hillshade, hillshade, 1.0);
 
 //  gl_FragColor = hill_col;
 //  gl_FragColor = slope_col;
+// color = color + (u_test*2.0)-1.0;
 //  gl_FragColor = color;
-    gl_FragColor = mix(hill_col, slope_col, u_test);
+
+  // Mixage
+
+  // hillshade / slope
+  vec4 mixHillSlope = mix(hill_col, slope_col, u_mixhillslope);
+
+  // colors
+  vec4 mixColor = mixHillSlope * color;   // multiply transition
 
 
-//   gl_FragColor = texture2D(u_image, v_pos);
+  // Rendu final
+
+  gl_FragColor = mix(mixHillSlope, mixColor, u_mixcolor);
+  // gl_FragColor = texture2D(u_image, v_pos);
 
 }

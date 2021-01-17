@@ -5727,6 +5727,12 @@
       },
       "property-type": "data-constant"
     },
+
+
+
+
+
+
     "hillshade-test": {
       "type": "number",
       "doc": "test added value",
@@ -5750,6 +5756,205 @@
       },
       "property-type": "data-constant"
     },
+
+    "global-mixhillslope": {
+      "type": "number",
+      "doc": "test added value",
+      "default": 0.45,
+      "minimum": 0,
+      "maximum": 1,
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.43.0",
+          "android": "6.0.0",
+          "ios": "4.0.0",
+          "macos": "0.7.0"
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom"
+        ]
+      },
+      "property-type": "data-constant"
+    },
+
+    "global-mixcolor": {
+      "type": "number",
+      "doc": "test added value",
+      "default": 0.5,
+      "minimum": 0,
+      "maximum": 1,
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.43.0",
+          "android": "6.0.0",
+          "ios": "4.0.0",
+          "macos": "0.7.0"
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom"
+        ]
+      },
+      "property-type": "data-constant"
+    },
+
+
+    "hillshade-brightness": {
+      "type": "number",
+      "doc": "test added value",
+      "default": 0,
+      "minimum": -1,
+      "maximum": 1,
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.43.0",
+          "android": "6.0.0",
+          "ios": "4.0.0",
+          "macos": "0.7.0"
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom"
+        ]
+      },
+      "property-type": "data-constant"
+    },
+
+    "hillshade-contrast": {
+      "type": "number",
+      "doc": "test added value",
+      "default": 0,
+      "minimum": -1,
+      "maximum": 1,
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.43.0",
+          "android": "6.0.0",
+          "ios": "4.0.0",
+          "macos": "0.7.0"
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom"
+        ]
+      },
+      "property-type": "data-constant"
+    },
+
+    "hillshade-exposure": {
+      "type": "number",
+      "doc": "test added value",
+      "default": 0,
+      "minimum": -1,
+      "maximum": 1,
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.43.0",
+          "android": "6.0.0",
+          "ios": "4.0.0",
+          "macos": "0.7.0"
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom"
+        ]
+      },
+      "property-type": "data-constant"
+    },
+
+    "hillshade-zfactor": {
+      "type": "number",
+      "doc": "test added value",
+      "default": 1,
+      "minimum": 0,
+      "maximum": 100,
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.43.0",
+          "android": "6.0.0",
+          "ios": "4.0.0",
+          "macos": "0.7.0"
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom"
+        ]
+      },
+      "property-type": "data-constant"
+    },
+
+    "hillshade-azimuth": {
+      "type": "number",
+      "doc": "test added value",
+      "default": 315,
+      "minimum": 0,
+      "maximum": 360,
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.43.0",
+          "android": "6.0.0",
+          "ios": "4.0.0",
+          "macos": "0.7.0"
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom"
+        ]
+      },
+      "property-type": "data-constant"
+    },
+
+    "hillshade-zenith": {
+      "type": "number",
+      "doc": "test added value",
+      "default": 45,
+      "minimum": 0,
+      "maximum": 90,
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.43.0",
+          "android": "6.0.0",
+          "ios": "4.0.0",
+          "macos": "0.7.0"
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom"
+        ]
+      },
+      "property-type": "data-constant"
+    },
+
+
+
+
+
+
     "hillshade-shadow-color": {
       "type": "color",
       "default": "#000000",
