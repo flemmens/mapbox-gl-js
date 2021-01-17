@@ -36,8 +36,12 @@ export type HillshadeUniformsType = {|
     'u_contrast': Uniform1f,
     'u_exposure': Uniform1f,
     'u_zfactor': Uniform1f,
-    'u_mixhillslope': Uniform1f,
-    'u_mixcolor': Uniform1f
+    'u_op_hillshade': Uniform1f,
+    'u_op_slope': Uniform1f,
+    'u_op_color': Uniform1f,
+    'u_glob_brightness': Uniform1f,
+    'u_glob_contrast': Uniform1f,
+    'u_glob_exposure': Uniform1f
 |};
 
 export type HillshadePrepareUniformsType = {|
@@ -62,8 +66,12 @@ const hillshadeUniforms = (context: Context, locations: UniformLocations): Hills
     'u_contrast': new Uniform1f(context, locations.u_contrast),
     'u_exposure': new Uniform1f(context, locations.u_exposure),
     'u_zfactor': new Uniform1f(context, locations.u_zfactor),
-    'u_mixhillslope': new Uniform1f(context, locations.u_mixhillslope),
-    'u_mixcolor': new Uniform1f(context, locations.u_mixcolor)
+    'u_op_hillshade': new Uniform1f(context, locations.u_op_hillshade),
+    'u_op_slope': new Uniform1f(context, locations.u_op_slope),
+    'u_op_color': new Uniform1f(context, locations.u_op_color),
+    'u_glob_brightness': new Uniform1f(context, locations.u_glob_brightness),
+    'u_glob_contrast': new Uniform1f(context, locations.u_glob_contrast),
+    'u_glob_exposure': new Uniform1f(context, locations.u_glob_exposure)
 });
 
 const hillshadePrepareUniforms = (context: Context, locations: UniformLocations): HillshadePrepareUniformsType => ({
@@ -90,8 +98,13 @@ const hillshadeUniformValues = (
     const exposure   = layer.paint.get('hillshade-exposure');
     const zfactor    = layer.paint.get('hillshade-zfactor');
 
-    const mixhillslope = layer.paint.get('global-mixhillslope');
-    const mixcolor     = layer.paint.get('global-mixcolor');
+    const op_hillshade = layer.paint.get('layers-opacityHillshade');
+    const op_slope     = layer.paint.get('layers-opacitySlope');
+    const op_color     = layer.paint.get('layers-opacityColors');
+
+    const glob_brightness = layer.paint.get('global-brightness');
+    const glob_contrast   = layer.paint.get('global-contrast');
+    const glob_exposure   = layer.paint.get('global-exposure');
 
 // console.log('zoom: '+tile.tileID.overscaledZ+', test: '+test);
 
@@ -117,8 +130,12 @@ const hillshadeUniformValues = (
         'u_contrast': contrast,
         'u_exposure': exposure,
         'u_zfactor': zfactor,
-        'u_mixhillslope': mixhillslope,
-        'u_mixcolor': mixcolor
+        'u_op_hillshade': op_hillshade,
+        'u_op_slope': op_slope,
+        'u_op_color': op_color,
+        'u_glob_brightness': glob_brightness,
+        'u_glob_contrast': glob_contrast,
+        'u_glob_exposure': glob_exposure
     };
 };
 

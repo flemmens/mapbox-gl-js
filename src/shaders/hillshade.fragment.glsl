@@ -20,10 +20,16 @@ uniform float u_brightness;
 uniform float u_contrast;
 uniform float u_exposure;
 
-// global
-uniform float u_mixhillslope;
-uniform float u_mixcolor;
+// layers
+uniform float u_op_hillshade;
+uniform float u_op_slope;
+uniform float u_op_color;
 
+// global
+
+uniform float u_glob_exposure;
+uniform float u_glob_contrast;
+uniform float u_glob_brightness;
 
 #define PI 3.141592653589793238462
 
@@ -73,7 +79,7 @@ void main() {
   vec4 colours[5];
   colours[0] = vec4(0.1,  0.1, 0.5, 0.0);
   colours[1] = vec4(0.4, 0.55, 0.3, 1.0);
-  colours[2] = vec4(0.9,  0.9, 0.6, 500.0);
+  colours[2] = vec4(0.9,  0.9, 0.6, 300.0);
   colours[3] = vec4(0.6,  0.4, 0.3, 2000.0);
   colours[4] = vec4(1.0,  1.0, 1.0, 4000.0);
 
@@ -86,6 +92,29 @@ void main() {
       smoothstep( colours[n].a, colours[n+1].a, elev )
     );
   }
+
+/*
+  float elev_start = -99999.0;
+  float elev_end = elev_start;
+
+  vec4 colorA = vec4(colours[0].rgb, 1.0);
+  vec4 colorB = colorA;
+
+  for(int n=0; n<5; n++) {
+    elev_end = colours[n].a;
+    colorB = vec4(colours[n].rgb, 1.0);
+
+    if (elev_end > elev)
+      break;
+    else {
+      elev_start = elev_end;
+      colorA = colorB;
+    }
+  }
+
+  float m  = (elev - elev_start) / (elev_end - elev_start);
+  vec4 color = mix(colorA, colorB, m);
+*/
 
 
   // Valeurs finales
@@ -103,26 +132,39 @@ void main() {
   // Exposure (-1 to 1)
   hillshade = (1.0 + u_exposure) * hillshade;
 
+
+
+  // Opacity hillshade / slope
+
+  vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
   vec4 slope_col = vec4(slopeRad, slopeRad, slopeRad, 1.0);
   vec4 hill_col  = vec4(hillshade, hillshade, hillshade, 1.0);
 
-//  gl_FragColor = hill_col;
-//  gl_FragColor = slope_col;
-// color = color + (u_test*2.0)-1.0;
-//  gl_FragColor = color;
+  vec4 a = mix(white, slope_col, u_op_slope);
+  vec4 b = mix(white, hill_col, u_op_hillshade);
+  vec4 comb = a*b;
 
-  // Mixage
-
-  // hillshade / slope
-  vec4 mixHillSlope = mix(hill_col, slope_col, u_mixhillslope);
+  float c = mix(1.0, slopeRad, u_op_slope);
 
   // colors
-  vec4 mixColor = mixHillSlope * color;   // multiply transition
+  vec4 mixColor = comb * color;   // multiply transition
+  vec4 final = mix(comb, mixColor, u_op_color);
+
+  // Global adjustements
+
+  // Brightness (-1 to 1)
+  final = final + u_glob_brightness;
+
+  // Contrast (-1 to 1)
+  final = 0.5 + (1.0 + u_glob_contrast) * (final - 0.5);
+
+  // Exposure (-1 to 1)
+  final = (1.0 + u_glob_exposure) * final;
 
 
   // Rendu final
 
-  gl_FragColor = mix(mixHillSlope, mixColor, u_mixcolor);
+  gl_FragColor = vec4(final.rgb, 1.0);
   // gl_FragColor = texture2D(u_image, v_pos);
 
 }
