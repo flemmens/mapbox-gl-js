@@ -86,7 +86,7 @@ const hillshadePrepareUniforms = (context: Context, locations: UniformLocations)
 // Render
 
 // Passe ici des milliers de fois par seconde
-// -> A OPTIMISER: Ne pas faire de calculs, tester s'il y a eu du changement
+// -> A OPTIMISER: Ne pas faire de calculs, tester s'il y a eu du changement, passer le min de variables
 
 console.log('Init render')
 
