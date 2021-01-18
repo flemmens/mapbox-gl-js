@@ -85,6 +85,14 @@ const hillshadePrepareUniforms = (context: Context, locations: UniformLocations)
 
 // Render
 
+// Passe ici des milliers de fois par seconde
+// -> A OPTIMISER: Ne pas faire de calculs, tester s'il y a eu du changement
+
+console.log('Init render')
+
+var glob_ramp = [0.1, 0.1, 0.5, -5000.0, 0.607, 0.937, 0.949, 0.0, 0.4, 0.55, 0.3, 1.0, 0.9,  0.9, 0.6, 300.0, 0.6,  0.4, 0.3, 2000.0,1.0,  1.0, 1.0, 4000.0, 1.0, 1.0, 1.0, 20000.0];
+
+
 const hillshadeUniformValues = (
     painter: Painter,
     tile: Tile,
@@ -109,27 +117,26 @@ const hillshadeUniformValues = (
     const glob_contrast   = layer.paint.get('global-contrast');
     const glob_exposure   = layer.paint.get('global-exposure');
 
-    // const glob_ramp   = layer.paint.get('global-ramp');   // Float32Array
-    const glob_ramp = [0.1, 0.1, 0.5, -5000.0, 0.607, 0.937, 0.949, 0.0, 0.4, 0.55, 0.3, 1.0, 0.9,  0.9, 0.6, 300.0, 0.6,  0.4, 0.3, 2000.0,1.0,  1.0, 1.0, 4000.0];
-    const nel = glob_ramp.length;
-
-    glob_ramp.push(glob_ramp[nel-4], glob_ramp[nel-3], glob_ramp[nel-2], 20000.0);   // on recopie la dernière valeur pour terminer le tableau
+    glob_ramp = layer.paint.get('global-ramp');
+    if (glob_ramp === undefined)
+      glob_ramp = [0.1, 0.1, 0.5, -5000.0, 0.607, 0.937, 0.949, 0.0, 0.4, 0.55, 0.3, 1.0, 0.9,  0.9, 0.6, 300.0, 0.6,  0.4, 0.3, 2000.0,1.0,  1.0, 1.0, 4000.0, 1.0, 1.0, 1.0, 20000.0];
 
 // console.log(glob_ramp);
 // console.log('zoom: '+tile.tileID.overscaledZ+', test: '+test);
 
-
-    let azimuthal = layer.paint.get('hillshade-illumination-direction') * (Math.PI / 180);
+    // let azimuthal = layer.paint.get('hillshade-illumination-direction') * (Math.PI / 180);
     // modify azimuthal angle by map rotation if light is anchored at the viewport
-    if (layer.paint.get('hillshade-illumination-anchor') === 'viewport') {
-        azimuthal -= painter.transform.angle;
-    }
+    // if (layer.paint.get('hillshade-illumination-anchor') === 'viewport') {
+    //     azimuthal -= painter.transform.angle;
+    // }
+    // 'u_light': [layer.paint.get('hillshade-exaggeration'), azimuthal],
     const align = !painter.options.moving;
+
     return {
         'u_matrix': painter.transform.calculatePosMatrix(tile.tileID.toUnwrapped(), align),
         'u_image': 0,
         'u_latrange': getTileLatRange(painter, tile.tileID),
-        'u_light': [layer.paint.get('hillshade-exaggeration'), azimuthal],
+        'u_light': 0,
         'u_shadow': shadow,
         'u_highlight': highlight,
         'u_accent': accent,
@@ -152,6 +159,7 @@ const hillshadeUniformValues = (
 };
 
 // Prepare
+// Passe moins souvent que hillshadeUniformValues mais qd même conséquent
 
 const hillshadeUniformPrepareValues = (
     tileID: OverscaledTileID
@@ -163,6 +171,7 @@ const hillshadeUniformPrepareValues = (
     mat4.ortho(matrix, 0, EXTENT, -EXTENT, 0, 0, 1);
     mat4.translate(matrix, matrix, [0, -EXTENT, 0]);
 // console.log('zoom (prepare): '+tileID.overscaledZ);
+// console.log('prepare')
 
     return {
         'u_matrix': matrix,

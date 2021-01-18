@@ -5732,6 +5732,7 @@
 
     "global-ramp": {
       "type": "array",
+      "doc": "Color ramp array",
       "value": "number",
       "property-type": "data-constant"
     },
